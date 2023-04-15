@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 
+import study.jpa.dto.MemberDto;
 import study.jpa.entity.Member;
+import study.jpa.entity.Team;
 
 @SpringBootTest
 @Transactional
@@ -19,6 +21,9 @@ import study.jpa.entity.Member;
 public class MemberJpaRepositoryTest {
     @Autowired
     MemberJpaRepository memberJpaRepository;
+
+    @Autowired
+    TeamJpaRepository teamJpaRepository;
 
     @Test
     public void findByUsernameAndAgeGreaterThan() {
@@ -47,6 +52,47 @@ public class MemberJpaRepositoryTest {
         List<Member> result = memberJpaRepository.findByUsername("AAA");
         Member findMember = result.get(0);
         assertThat(findMember).isEqualTo(m1);
+    }
+
+    @Test
+    public void testQuery() {
+        Member m1 = new Member("AAA", 10);
+        Member m2 = new Member("AAA", 20);
+        memberJpaRepository.save(m1);
+        memberJpaRepository.save(m2);
+
+        List<Member> result = memberJpaRepository.findUser("AAA", 10);
+        Member findMember = result.get(0);
+        assertThat(findMember).isEqualTo(m1);
+    }
+
+    @Test
+    public void findUsernameList() {
+        Member m1 = new Member("AAA", 10);
+        Member m2 = new Member("AAA", 20);
+        memberJpaRepository.save(m1);
+        memberJpaRepository.save(m2);
+
+        List<String> usernameList = memberJpaRepository.findUsernameList();
+        for (String s : usernameList) {
+            System.out.println("s= " + s);
+        }
+    }
+
+    @Test
+    public void findMemberDto() {
+        // team을 먼저 save
+        Team team = new Team("teamA");
+        teamJpaRepository.save(team);
+
+        Member m1 = new Member("AAA", 10);
+        m1.setTeam(team);
+        memberJpaRepository.save(m1);
+
+        List<MemberDto> memberDtos = memberJpaRepository.findMemberDto();
+        for (MemberDto dto : memberDtos) {
+            System.out.println("dto= " + dto);
+        }
     }
 
 }
