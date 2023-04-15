@@ -18,10 +18,10 @@ spring:
     open-in-view: true
     hibernate:
       ddl-auto: create
-#    show-sql: true
+    show-sql: true
     properties:
       hibernate:
-        format_sql: false
+        "[format_sql]": true
       default_batch_fetch_size: 100 # in query 자동 작성
   output:
     ansi:

@@ -1,6 +1,9 @@
 package study.jpa.repository;
 
-import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,17 +16,19 @@ import study.jpa.entity.Member;
 @Transactional
 @Rollback(false)
 public class MemberRepositoryTest {
+
     @Autowired
-    MemberJpaRepository memberJpaRepository;
+    MemberRepository memberRepository;
 
     @Test
-    public void testMember() {
-        Member member = new Member("memberA");
-        Member savedMember = memberJpaRepository.save(member);
-        Member findMember = memberJpaRepository.findById(savedMember.getId()).get();
-        Assertions.assertThat(findMember.getId()).isEqualTo(member.getId());
-
-        Assertions.assertThat(findMember.getUsername()).isEqualTo(member.getUsername());
-        Assertions.assertThat(findMember).isEqualTo(member); // JPA 엔티티 동일성보장
+    public void findByUsernameAndAgeGreaterThan() {
+        Member m1 = new Member("AAA", 10);
+        Member m2 = new Member("AAA", 20);
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+        List<Member> result = memberRepository.findByUsernameAndAgeGreaterThan("AAA", 15);
+        assertThat(result.get(0).getUsername()).isEqualTo("AAA");
+        assertThat(result.get(0).getAge()).isEqualTo(20);
+        assertThat(result.size()).isEqualTo(1);
     }
 }
