@@ -2,7 +2,9 @@ package study.jpa.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -93,6 +95,35 @@ public class MemberJpaRepositoryTest {
         for (MemberDto dto : memberDtos) {
             System.out.println("dto= " + dto);
         }
+    }
+
+    @Test
+    public void findBynames() {
+        Member m1 = new Member("AAA", 10);
+        Member m2 = new Member("AAA", 20);
+        memberJpaRepository.save(m1);
+        memberJpaRepository.save(m2);
+
+        List<Member> result = memberJpaRepository.findByNames(Arrays.asList("AAA", "BBB"));
+        for (Member member : result) {
+            System.out.println("member= " + member);
+        }
+    }
+
+    @Test
+    public void returnType() {
+        Member m1 = new Member("AAA", 10);
+        Member m2 = new Member("AAA", 20);
+        memberJpaRepository.save(m1);
+        memberJpaRepository.save(m2);
+
+        // List는 무조건 null이 아님. 값이 없더라도 빈 컬렉션 반환
+        List<Member> aaa = memberJpaRepository.findListByUsername("AAA");
+        Member findMember = memberJpaRepository.findMemberByUsername("AAA");
+        System.out.println("findMember = " + findMember);
+
+        Optional<Member> findOptional = memberJpaRepository.findOptionalByUsername("AAA");
+        System.out.println("findOptional = " + findOptional);
     }
 
 }
