@@ -26,10 +26,6 @@ spring:
   output:
     ansi:
       enabled: always
-  security:
-    user:
-      name: ssar
-      password: 1234
 
 logging:
   level:
